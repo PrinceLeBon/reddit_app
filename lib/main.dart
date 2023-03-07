@@ -55,6 +55,9 @@ class _MyHomePageState extends State<MyHomePage> {
             Text(
               'You have pushed the button this many times: $token',
             ),
+            TextButton(onPressed: (){
+              userInfo(token);
+            }, child: Text('Get User info'))
           ],
         ),
       ),
@@ -73,24 +76,37 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void userInfo(String? authToken) async {
+    var response = await http.get(
+      Uri.https('oauth.reddit.com', '/api/v1/me'),
+      headers: <String, String>{'Authorization': 'Bearer $authToken'},
+    );
+    if (response.statusCode == 200) {
+      var json = jsonDecode(response.body);
+      print(json);
+    } else {
+      throw Exception('Failed to get profile data');
+    }
+  }
+
   Future<String?> _getAuthorizationCode() async {
     const authorizationUrl = '$_authEndpoint'
         'client_id=$_clientId'
         '&response_type=code'
         '&state=RANDOM_STRING'
         '&redirect_uri=$_redirectUri'
-        '&duration=temporary'
-        '&scope=read';
+        '&duration=permanent'
+        '&scope=identity,edit,flair,history,livemanage,modconfig,modflair,'
+        'modlog,modposts,modwiki,mysubreddits,privatemessages,read,report,save,'
+        'structuredstyles,submit,subscribe,vote,wikiedit,wikiread';
     final result = await FlutterWebAuth.authenticate(
         url: authorizationUrl, callbackUrlScheme: "redditapp");
     final uri = Uri.parse(result);
     final queryParams = uri.queryParameters;
-    print(queryParams['code']);
     return queryParams['code'];
   }
 
   Future<String> _getAccessToken(String? authorizationCode) async {
-    print(authorizationCode);
     final tokenResponse = await http.post(Uri.parse(_tokenEndpoint), headers: {
       'Authorization': 'Basic ${base64Encode(utf8.encode("$_clientId:"))}'
     }, body: {
