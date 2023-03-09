@@ -3,6 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_web_auth/flutter_web_auth.dart';
 import 'package:http/http.dart' as http;
+import 'package:reddit_app/components/globals.dart';
+import 'package:reddit_app/models/user.dart';
+import 'package:reddit_app/pages/profile.dart';
 
 void main() {
   runApp(const MyApp());
@@ -40,7 +43,8 @@ class _MyHomePageState extends State<MyHomePage> {
       'https://www.reddit.com/api/v1/authorize.compact?';
   static const String _tokenEndpoint =
       'https://www.reddit.com/api/v1/access_token';
-  String token = "c";
+  String token = "";
+  String img = '';
 
   @override
   Widget build(BuildContext context) {
@@ -55,14 +59,24 @@ class _MyHomePageState extends State<MyHomePage> {
             Text(
               'You have pushed the button this many times: $token',
             ),
-            TextButton(onPressed: (){
-              userInfo(token);
-            }, child: Text('Get User info'))
+            TextButton(
+                onPressed: () {
+                  _incrementCounter();
+                },
+                child: Text('Reddit')),
+            TextButton(
+                onPressed: () {
+                  userInfo(token);
+                },
+                child: Text('Get user info '))
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: /*_incrementCounter*/ () {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => Profile_Page()));
+        },
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),
@@ -84,6 +98,13 @@ class _MyHomePageState extends State<MyHomePage> {
     if (response.statusCode == 200) {
       var json = jsonDecode(response.body);
       print(json);
+      setState(() {
+        global_user = User(
+            username: json["subreddit"]["display_name"],
+            description: json["subreddit"]["description"],
+            profile_picture: json["subreddit"]["icon_img"],
+            banner_picture: json["subreddit"]["banner_img"]);
+      });
     } else {
       throw Exception('Failed to get profile data');
     }
