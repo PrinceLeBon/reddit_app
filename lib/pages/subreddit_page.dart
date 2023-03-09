@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-
 class SubredditPage extends StatefulWidget {
   final String authToken;
+
   const SubredditPage({Key? key, required this.authToken}) : super(key: key);
 
   @override
@@ -20,12 +20,15 @@ class _SubredditPageState extends State<SubredditPage> {
     return Scaffold(
       appBar: AppBar(),
       body: Center(
-        child: TextButton(onPressed: () {
-          getSubscribedSubreddits(widget.authToken);
-        }, child: Text('data')),
+        child: TextButton(
+            onPressed: () {
+              getSubscribedSubreddits(widget.authToken);
+            },
+            child: Text('data')),
       ),
     );
   }
+
 /*
   Future<void> _loadSubredditPosts() async {
     setState(() {
@@ -57,15 +60,20 @@ class _SubredditPageState extends State<SubredditPage> {
     }
   }*/
 
-  /*Future<List<String>>*/ void getSubscribedSubreddits(String accessToken) async {
+  /*Future<List<String>>*/
+  void getSubscribedSubreddits(String accessToken) async {
     final response = await http.get(
       Uri.https('oauth.reddit.com', '/subreddits/mine/subscriber'),
       headers: <String, String>{'Authorization': 'Bearer $accessToken'},
     );
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
-      print(json);
-      /*final subredditsData = jsonData['data']['children'];
+      List<dynamic> tab = json['data']['children'];
+      for (int i = 0; i < tab.length; i++) {
+        print(tab[i]['data']['display_name']);
+      }
+      final c = tab.map((e) => e['data']['display_name']).toList().cast<String>();
+      /*final subredditsData = jsonData['data']['children']['data']['display_name_prefixed'];
       final subreddits = subredditsData
           .map((subreddit) => subreddit['data']['display_name_prefixed'])
           .toList()
