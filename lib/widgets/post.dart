@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_app/models/reddit_post.dart';
+import 'package:reddit_app/pages/subreddit_profile.dart';
 import 'package:reddit_app/widgets/profile_picture.dart';
 
 class Post extends StatefulWidget {
   final Reddit_Post redditPost;
+  final String authToken;
 
-  const Post({Key? key, required this.redditPost}) : super(key: key);
+  const Post({Key? key, required this.redditPost, required this.authToken})
+      : super(key: key);
 
   @override
   State<Post> createState() => _PostState();
@@ -23,7 +26,7 @@ class _PostState extends State<Post> {
     return Container(
       color: Colors.white,
       child: Padding(
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         child: Column(
           children: [
             Column(
@@ -36,9 +39,20 @@ class _PostState extends State<Post> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'r/${widget.redditPost.subredditName}',
-                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        InkWell(
+                          child: Text(
+                            widget.redditPost.subredditName,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          onTap: () {
+                            Navigator.of(context)
+                                .push(MaterialPageRoute(builder: (context) {
+                              return SubredditProfile(
+                                  authToken: widget.authToken,
+                                  subredditName:
+                                      widget.redditPost.subredditName);
+                            }));
+                          },
                         ),
                         Text(
                           'u/${widget.redditPost.author}',

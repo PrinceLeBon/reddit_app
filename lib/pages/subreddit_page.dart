@@ -26,12 +26,17 @@ class _SubredditPageState extends State<SubredditPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white70,
-        appBar: AppBar(),
+        appBar: AppBar(
+          actions: [
+            IconButton(
+                onPressed: _loadSubredditPosts, icon: const Icon(Icons.cached))
+          ],
+        ),
         body: (listRedditPost.isEmpty)
             ? Container()
             : ListView.separated(
                 separatorBuilder: (context, index) {
-                  return Container(
+                  return SizedBox(
                     height: 5,
                     width: MediaQuery.of(context).size.width,
                   );
@@ -39,7 +44,10 @@ class _SubredditPageState extends State<SubredditPage> {
                 itemCount: listRedditPost.length,
                 cacheExtent: 5,
                 itemBuilder: (context, index) {
-                  return Post(redditPost: listRedditPost[index]);
+                  return Post(
+                    redditPost: listRedditPost[index],
+                    authToken: widget.authToken,
+                  );
                 }));
   }
 
@@ -62,6 +70,9 @@ class _SubredditPageState extends State<SubredditPage> {
   }
 
   void getSubredditPosts(String accessToken, String subreddit) async {
+    setState(() {
+      listRedditPost.clear();
+    });
     final response = await http.get(
       Uri.https('oauth.reddit.com', '/r/$subreddit/new', {'limit': '100'}),
       headers: <String, String>{'Authorization': 'Bearer $accessToken'},
@@ -83,13 +94,6 @@ class _SubredditPageState extends State<SubredditPage> {
           listRedditPost.add(redditPost);
           listRedditPost.shuffle();
         });
-      }
-      Map<dynamic, dynamic> ll = postsData[0]['data'];
-      print('${ll.length} \n\n');
-      List<dynamic> lll = ll.keys.toList();
-      print(' ${lll.length} \n\n');
-      for (int i = 0; i < ll.length; i++) {
-        print('$i: ${lll[i]}: ${ll[lll[i]]} \n');
       }
       /*Map <dynamic, dynamic> ll = l[9]['data'];
       print('${ll.length} \n\n');
