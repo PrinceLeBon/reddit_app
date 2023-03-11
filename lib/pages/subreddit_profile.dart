@@ -1,6 +1,6 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:reddit_app/pages/subreddit_page.dart';
 import 'package:reddit_app/widgets/profile_picture.dart';
 import 'package:http/http.dart' as http;
 import '../components/globals.dart';
@@ -45,7 +45,10 @@ class _SubredditProfileState extends State<SubredditProfile> {
             toolbarHeight: 40,
             leading: IconButton(
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  Navigator.of(context)
+                      .pushReplacement(MaterialPageRoute(builder: (context) {
+                    return SubredditPage(authToken: widget.authToken);
+                  }));
                 },
                 icon: const Icon(
                   Icons.arrow_back,
@@ -80,9 +83,29 @@ class _SubredditProfileState extends State<SubredditProfile> {
                           bottom: 0,
                           child: Padding(
                             padding: const EdgeInsets.only(left: 20),
-                            child: Profile_Picture(
-                                taille: 60,
-                                image: profile_img.replaceAll('&amp;', '&')),
+                            child: Container(
+                              width: 70,
+                              height: 70,
+                              decoration: BoxDecoration(
+                                  color: (profile_img.isEmpty)
+                                      ? Colors.black
+                                      : Colors.white,
+                                  shape: BoxShape.circle),
+                              child: Center(
+                                child: (profile_img.isEmpty)
+                                    ? const Text(
+                                        '/r',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 30,
+                                            color: Colors.white),
+                                      )
+                                    : Profile_Picture(
+                                        taille: 60,
+                                        image: profile_img.replaceAll(
+                                            '&amp;', '&')),
+                              ),
+                            ),
                           ),
                         )
                       ],
@@ -120,14 +143,18 @@ class _SubredditProfileState extends State<SubredditProfile> {
             toolbarHeight: 5,
             elevation: 0,
           ),
-          SliverAnimatedList(
-            itemBuilder: (_, index, ___) {
-              return Post(
-                  redditPost: listRedditPost[index],
-                  authToken: widget.authToken);
-            },
-            initialItemCount: listRedditPost.length,
-          )
+          (listRedditPost.isEmpty)
+              ? const SliverToBoxAdapter(
+                  child: Center(child: CircularProgressIndicator()),
+                )
+              : SliverAnimatedList(
+                  itemBuilder: (_, index, ___) {
+                    return Post(
+                        redditPost: listRedditPost[index],
+                        authToken: widget.authToken);
+                  },
+                  initialItemCount: listRedditPost.length,
+                )
         ],
       ),
     );
@@ -148,16 +175,14 @@ class _SubredditProfileState extends State<SubredditProfile> {
         getSubredditPosts(authToken, subredditName);
       });
     } else {
-      throw Exception('Failed to load subreddit $subredditName posts');
+      throw Exception('Failed to load subreddit $subredditName infos');
     }
   }
 
   void getSubredditPosts(String accessToken, String subreddit) async {
-    setState(() {
-      listRedditPost.clear();
-    });
+    listRedditPost.clear();
     final response = await http.get(
-      Uri.https('oauth.reddit.com', '/r/$subreddit/new', {'limit': '100'}),
+      Uri.https('oauth.reddit.com', '$subreddit/new', {'limit': '100'}),
       headers: <String, String>{'Authorization': 'Bearer $accessToken'},
     );
     if (response.statusCode == 200) {
@@ -175,11 +200,10 @@ class _SubredditProfileState extends State<SubredditProfile> {
             isVideo: element['data']['is_video']);
         setState(() {
           listRedditPost.add(redditPost);
-          listRedditPost.shuffle();
         });
       }
     } else {
-      throw Exception('Failed to load subreddit posts');
+      throw Exception('Failed to load subreddit $subreddit posts');
     }
   }
 }

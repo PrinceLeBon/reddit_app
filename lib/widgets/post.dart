@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_app/models/reddit_post.dart';
 import 'package:reddit_app/pages/subreddit_profile.dart';
-import 'package:reddit_app/widgets/profile_picture.dart';
 
 class Post extends StatefulWidget {
   final Reddit_Post redditPost;
@@ -35,7 +34,7 @@ class _PostState extends State<Post> {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Profile_Picture(taille: 20, image: 'image'),
+                    //const Profile_Picture(taille: 20, image: 'image'),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

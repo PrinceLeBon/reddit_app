@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:reddit_app/models/reddit_post.dart';
+import 'package:reddit_app/pages/subreddit_search.dart';
 import 'package:reddit_app/widgets/post.dart';
 import '../components/globals.dart';
 
@@ -15,6 +16,9 @@ class SubredditPage extends StatefulWidget {
 }
 
 class _SubredditPageState extends State<SubredditPage> {
+  final myController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
   @override
   void initState() {
     // TODO: implement initState
@@ -27,13 +31,42 @@ class _SubredditPageState extends State<SubredditPage> {
     return Scaffold(
         backgroundColor: Colors.white70,
         appBar: AppBar(
+          title: Form(
+              key: _formKey,
+              child: TextFormField(
+                style: const TextStyle(color: Colors.white),
+                controller: myController,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter subreddit name';
+                  }
+                  return null;
+                },
+                decoration: InputDecoration(
+                    suffixIcon: IconButton(
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            Navigator.of(context)
+                                .push(MaterialPageRoute(builder: (context) {
+                              return SubredditSearch(
+                                authToken: widget.authToken,
+                                subredditName: myController.text.trim(),
+                              );
+                            }));
+                          }
+                        },
+                        icon: const Icon(Icons.search, color: Colors.white)),
+                    focusedBorder: const UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    )),
+              )),
           actions: [
             IconButton(
                 onPressed: _loadSubredditPosts, icon: const Icon(Icons.cached))
           ],
         ),
         body: (listRedditPost.isEmpty)
-            ? Container()
+            ? const Center(child: CircularProgressIndicator())
             : ListView.separated(
                 separatorBuilder: (context, index) {
                   return SizedBox(
@@ -128,8 +161,11 @@ class _SubredditPageState extends State<SubredditPage> {
   }
 
   Future<void> _loadSubredditPosts() async {
+    listRedditPost.clear();
     List<String> listSubreddit =
         await getSubscribedSubreddits(widget.authToken);
+    int i = listSubreddit.indexOf('announcements');
+    listSubreddit.removeAt(i);
     for (var subreddit in listSubreddit) {
       getSubredditPosts(widget.authToken, subreddit);
     }
