@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:reddit_app/models/reddit_post.dart';
 import 'package:reddit_app/widgets/post.dart';
-
 import '../components/globals.dart';
 
 class SubredditPage extends StatefulWidget {
@@ -26,14 +25,22 @@ class _SubredditPageState extends State<SubredditPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white60,
+        backgroundColor: Colors.white70,
         appBar: AppBar(),
-        body: ListView.builder(
-            itemCount: listRedditPost.length,
-            cacheExtent: 5,
-            itemBuilder: (context, index) {
-              return Post(redditPost: listRedditPost[index]);
-            }));
+        body: (listRedditPost.isEmpty)
+            ? Container()
+            : ListView.separated(
+                separatorBuilder: (context, index) {
+                  return Container(
+                    height: 5,
+                    width: MediaQuery.of(context).size.width,
+                  );
+                },
+                itemCount: listRedditPost.length,
+                cacheExtent: 5,
+                itemBuilder: (context, index) {
+                  return Post(redditPost: listRedditPost[index]);
+                }));
   }
 
   Future<List<String>> getSubscribedSubreddits(String accessToken) async {
@@ -54,10 +61,9 @@ class _SubredditPageState extends State<SubredditPage> {
     }
   }
 
-  /*Future<List<Reddit_Post>>*/
   void getSubredditPosts(String accessToken, String subreddit) async {
     final response = await http.get(
-      Uri.https('oauth.reddit.com', '/r/$subreddit', {'limit': '100'}),
+      Uri.https('oauth.reddit.com', '/r/$subreddit/new', {'limit': '100'}),
       headers: <String, String>{'Authorization': 'Bearer $accessToken'},
     );
     if (response.statusCode == 200) {
@@ -73,7 +79,17 @@ class _SubredditPageState extends State<SubredditPage> {
             numComment: element['data']['num_comments'],
             score: element['data']['score'],
             isVideo: element['data']['is_video']);
-        listRedditPost.add(redditPost);
+        setState(() {
+          listRedditPost.add(redditPost);
+          listRedditPost.shuffle();
+        });
+      }
+      Map<dynamic, dynamic> ll = postsData[0]['data'];
+      print('${ll.length} \n\n');
+      List<dynamic> lll = ll.keys.toList();
+      print(' ${lll.length} \n\n');
+      for (int i = 0; i < ll.length; i++) {
+        print('$i: ${lll[i]}: ${ll[lll[i]]} \n');
       }
       /*Map <dynamic, dynamic> ll = l[9]['data'];
       print('${ll.length} \n\n');
@@ -113,9 +129,5 @@ class _SubredditPageState extends State<SubredditPage> {
     for (var subreddit in listSubreddit) {
       getSubredditPosts(widget.authToken, subreddit);
     }
-    listRedditPost.shuffle();
-    /*Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
-      return SubredditPage(authToken: widget.authToken);
-    }));*/
   }
 }

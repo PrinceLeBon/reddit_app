@@ -13,52 +13,66 @@ class Post extends StatefulWidget {
 
 class _PostState extends State<Post> {
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       color: Colors.white,
       child: Padding(
         padding: EdgeInsets.all(10),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
+            Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Profile_Picture(taille: 20, image: 'image'),
-                Column(
+                Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'r/${widget.redditPost.subredditName}',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    Text('u/${widget.redditPost.author}', style: TextStyle(color: Colors.grey),),
+                    const Profile_Picture(taille: 20, image: 'image'),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'r/${widget.redditPost.subredditName}',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          'u/${widget.redditPost.author}',
+                          style: const TextStyle(color: Colors.grey),
+                        ),
+                      ],
+                    )
                   ],
-                )
+                ),
+                Text(
+                  widget.redditPost.title,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
               ],
-            ),
-            Text(
-              widget.redditPost.title,
-              style: TextStyle(fontWeight: FontWeight.bold),
             ),
             Text(
               widget.redditPost.selftext,
             ),
+            (widget.redditPost.url.contains('.jpg') ||
+                    widget.redditPost.url.contains('.png'))
+                ? Image.network(widget.redditPost.url)
+                : Container(),
             Container(
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: NetworkImage(widget.redditPost.url),
-                      fit: BoxFit.cover)),
+              height: 10,
             ),
             Row(
               children: [
-                Icon(Icons.arrow_upward),
+                const Icon(Icons.arrow_upward),
                 Text(widget.redditPost.score.toString()),
-                Icon(Icons.arrow_downward),
-                Icon(Icons.messenger_outline),
-                Text('Commenter'),
-                Icon(Icons.share),
-                Text('Partager'),
+                const Icon(Icons.arrow_downward),
+                const Icon(Icons.messenger_outline),
+                const Text('Comment'),
+                const Icon(Icons.share),
+                const Text('Share'),
               ],
             )
           ],
