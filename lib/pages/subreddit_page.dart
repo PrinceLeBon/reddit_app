@@ -1,6 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:reddit_app/models/reddit_post.dart';
+import 'package:reddit_app/widgets/post.dart';
+
+import '../components/globals.dart';
 
 class SubredditPage extends StatefulWidget {
   final String authToken;
@@ -12,56 +16,27 @@ class SubredditPage extends StatefulWidget {
 }
 
 class _SubredditPageState extends State<SubredditPage> {
-  List<Map<String, dynamic>> _subredditPosts = [];
-  bool _isLoading = false;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _loadSubredditPosts();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: Center(
-        child: TextButton(
-            onPressed: () {
-              getSubscribedSubreddits(widget.authToken);
-            },
-            child: Text('data')),
-      ),
-    );
+        backgroundColor: Colors.white60,
+        appBar: AppBar(),
+        body: ListView.builder(
+            itemCount: listRedditPost.length,
+            cacheExtent: 5,
+            itemBuilder: (context, index) {
+              return Post(redditPost: listRedditPost[index]);
+            }));
   }
 
-/*
-  Future<void> _loadSubredditPosts() async {
-    setState(() {
-      _isLoading = true;
-    });
-    try {
-      final List<String> subscribedSubreddits =
-      await getSubscribedSubreddits(widget.authToken);
-      final List<Map<String, dynamic>> subredditPosts = [];
-      for (final subreddit in subscribedSubreddits) {
-        final Map<String, dynamic> posts =
-        await getSubredditPosts(widget.authToken, subreddit);
-        if (posts.isNotEmpty) {
-          subredditPosts.addAll(posts['data']['children']
-              .map<Map<String, dynamic>>((post) => post['data'])
-              .toList());
-        }
-      }
-      setState(() {
-        _subredditPosts = subredditPosts;
-      });
-    } catch (e) {
-      // Gestion des erreurs
-      print(e);
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }*/
-
-  /*Future<List<String>>*/
-  void getSubscribedSubreddits(String accessToken) async {
+  Future<List<String>> getSubscribedSubreddits(String accessToken) async {
     final response = await http.get(
       Uri.https('oauth.reddit.com', '/subreddits/mine/subscriber'),
       headers: <String, String>{'Authorization': 'Bearer $accessToken'},
@@ -69,34 +44,55 @@ class _SubredditPageState extends State<SubredditPage> {
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
       List<dynamic> tab = json['data']['children'];
-      for (int i = 0; i < tab.length; i++) {
-        print(tab[i]['data']['display_name']);
-      }
-      final c = tab.map((e) => e['data']['display_name']).toList().cast<String>();
-      /*final subredditsData = jsonData['data']['children']['data']['display_name_prefixed'];
-      final subreddits = subredditsData
-          .map((subreddit) => subreddit['data']['display_name_prefixed'])
+      final List<String> subredditList = tab
+          .map((subreddit) => subreddit['data']['display_name'])
           .toList()
           .cast<String>();
-      return subreddits;*/
+      return subredditList;
     } else {
       throw Exception('Failed to load subscribed subreddits');
     }
   }
 
-/*
-  Future<List<RedditPost>> getSubredditPosts(String accessToken, String subreddit) async {
+  /*Future<List<Reddit_Post>>*/
+  void getSubredditPosts(String accessToken, String subreddit) async {
     final response = await http.get(
-      Uri.parse('https://oauth.reddit.com/r/$subreddit/new'),
-      headers: {
-        'Authorization': 'Bearer $accessToken',
-        'User-Agent': 'myApp/0.0.1',
-      },
+      Uri.https('oauth.reddit.com', '/r/$subreddit', {'limit': '100'}),
+      headers: <String, String>{'Authorization': 'Bearer $accessToken'},
     );
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body);
-      final postsData = jsonData['data']['children'];
-      final posts = postsData.map((post) {
+      final List<dynamic> postsData = jsonData['data']['children'];
+      for (var element in postsData) {
+        Reddit_Post redditPost = Reddit_Post(
+            title: element['data']['title'],
+            selftext: element['data']['selftext'],
+            author: element['data']['author'],
+            url: element['data']['url'],
+            subredditName: element['data']['subreddit_name_prefixed'],
+            numComment: element['data']['num_comments'],
+            score: element['data']['score'],
+            isVideo: element['data']['is_video']);
+        listRedditPost.add(redditPost);
+      }
+      /*Map <dynamic, dynamic> ll = l[9]['data'];
+      print('${ll.length} \n\n');
+      List <dynamic> lll = ll.keys.toList();
+      print(' ${lll.length} \n\n');
+      for (int i=0; i<ll.length; i++){
+        print('$i: ${lll[i]}: ${ll[lll[i]]} \n');
+      }*/
+
+      /*for (int i = 0; i < l.length; i++) {
+        print(l[i]['data']['is_video']);
+        print('${'author: ' + l[i]['data']['author']}\n');
+        print(
+            '${'subreddit_name_prefixed: ' +
+                l[i]['data']['subreddit_name_prefixed']}\n');
+        print('${'url: ' + l[i]['data']['url']}\n');
+        print('\n\n\n\n\n\n');
+      }*/
+      /*final posts = postsData.map((post) {
         final postData = post['data'];
         return RedditPost(
           title: postData['title'],
@@ -105,10 +101,21 @@ class _SubredditPageState extends State<SubredditPage> {
           thumbnailUrl: postData['thumbnail'],
         );
       }).toList();
-      return posts;
+      return posts;*/
     } else {
       throw Exception('Failed to load subreddit posts');
     }
-  }*/
+  }
 
+  Future<void> _loadSubredditPosts() async {
+    List<String> listSubreddit =
+        await getSubscribedSubreddits(widget.authToken);
+    for (var subreddit in listSubreddit) {
+      getSubredditPosts(widget.authToken, subreddit);
+    }
+    listRedditPost.shuffle();
+    /*Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
+      return SubredditPage(authToken: widget.authToken);
+    }));*/
+  }
 }
