@@ -35,6 +35,7 @@ class _SubredditPageState extends State<SubredditPage> {
               key: _formKey,
               child: TextFormField(
                 style: const TextStyle(color: Colors.white),
+                cursorColor: Colors.white,
                 controller: myController,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -43,22 +44,23 @@ class _SubredditPageState extends State<SubredditPage> {
                   return null;
                 },
                 decoration: InputDecoration(
-                    suffixIcon: IconButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            Navigator.of(context)
-                                .push(MaterialPageRoute(builder: (context) {
-                              return SubredditSearch(
-                                authToken: widget.authToken,
-                                subredditName: myController.text.trim(),
-                              );
-                            }));
-                          }
-                        },
-                        icon: const Icon(Icons.search, color: Colors.white)),
-                    focusedBorder: const UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
-                    )),
+                  suffixIcon: IconButton(
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) {
+                            return SubredditSearch(
+                              authToken: widget.authToken,
+                              subredditName: myController.text.trim(),
+                            );
+                          }));
+                        }
+                      },
+                      icon: const Icon(Icons.search, color: Colors.white)),
+                  focusedBorder: const UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                ),
               )),
           actions: [
             IconButton(
@@ -96,6 +98,10 @@ class _SubredditPageState extends State<SubredditPage> {
           .map((subreddit) => subreddit['data']['display_name'])
           .toList()
           .cast<String>();
+      setState(() {
+        SubscribedSubredditOfUser = subredditList;
+        print(SubscribedSubredditOfUser);
+      });
       return subredditList;
     } else {
       throw Exception('Failed to load subscribed subreddits');

@@ -64,7 +64,7 @@ class _SubredditProfileState extends State<SubredditProfile> {
                     color: Colors.black,
                   ))
             ],
-            expandedHeight: 265,
+            expandedHeight: 285,
             flexibleSpace: FlexibleSpaceBar(
               background: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,11 +72,11 @@ class _SubredditProfileState extends State<SubredditProfile> {
                   Container(
                     height: 200,
                     width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
+                    /*decoration: BoxDecoration(
                         image: DecorationImage(
                             image: NetworkImage(
                                 banner_img.replaceAll('&amp;', '&')),
-                            fit: BoxFit.cover)),
+                            fit: BoxFit.cover)),*/
                     child: Stack(
                       children: [
                         Positioned(
@@ -117,10 +117,21 @@ class _SubredditProfileState extends State<SubredditProfile> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          widget.subredditName,
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              widget.subredditName,
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 20),
+                            ),
+                            TextButton(
+                                onPressed: Subscription,
+                                child: (SubscribedSubredditOfUser.contains(
+                                        widget.subredditName.substring(2)))
+                                    ? Text('Subscribed')
+                                    : Text('Subscribe'))
+                          ],
                         ),
                         Text(
                           '$numberSubscribers members',
@@ -188,6 +199,12 @@ class _SubredditProfileState extends State<SubredditProfile> {
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body);
       final List<dynamic> postsData = jsonData['data']['children'];
+      /*Map<dynamic, dynamic> v = postsData[6];
+      Map<dynamic, dynamic> vv = v['data'];
+      vv.forEach((key, value) {
+        print('$key : $value');
+      });
+      print(v);*/
       for (var element in postsData) {
         Reddit_Post redditPost = Reddit_Post(
             title: element['data']['title'],
@@ -199,11 +216,36 @@ class _SubredditProfileState extends State<SubredditProfile> {
             score: element['data']['score'],
             isVideo: element['data']['is_video']);
         setState(() {
-          listRedditPost.add(redditPost);
+          //listRedditPost.add(redditPost);
         });
       }
     } else {
       throw Exception('Failed to load subreddit $subreddit posts');
+    }
+  }
+
+  Future<void> Subscription() async {
+    final String action;
+    if (SubscribedSubredditOfUser.contains(widget.subredditName.substring(2))) {
+      action = 'unsub';
+      setState(() {
+        SubscribedSubredditOfUser.remove(widget.subredditName.substring(2));
+        print(SubscribedSubredditOfUser);
+      });
+    } else {
+      action = 'sub';
+      setState(() {
+        SubscribedSubredditOfUser.add(widget.subredditName.substring(2));
+        print(SubscribedSubredditOfUser);
+      });
+    }
+    final response = await http.post(
+      Uri.https('oauth.reddit.com', '/api/subscribe'),
+      headers: <String, String>{'Authorization': 'Bearer ${widget.authToken}'},
+      body: {'sr_name': widget.subredditName.substring(2), 'action': action},
+    );
+    if (response.statusCode != 200) {
+      throw Exception('Failed to toggle subscription');
     }
   }
 }

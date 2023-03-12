@@ -29,32 +29,36 @@ class _SubredditSearchState extends State<SubredditSearch> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: ListView.separated(
-          separatorBuilder: (context, index) {
-            return Container(
-              color: Colors.grey,
-              height: 5,
-              width: MediaQuery.of(context).size.width,
-            );
-          },
-          itemCount: result.length,
-          cacheExtent: 5,
-          itemBuilder: (context, index) {
-            return ListTile(
-              title: Text(
-                result[index].toString(),
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-              onTap: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) {
-                  return SubredditProfile(
-                      authToken: widget.authToken,
-                      subredditName: 'r/${result[index].toString()}');
-                }));
+      body: (result.isNotEmpty)
+          ? ListView.separated(
+              separatorBuilder: (context, index) {
+                return Container(
+                  color: Colors.grey,
+                  height: 5,
+                  width: MediaQuery.of(context).size.width,
+                );
               },
-            );
-          }),
+              itemCount: result.length,
+              cacheExtent: 5,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(
+                    result[index].toString(),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  onTap: () {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) {
+                      return SubredditProfile(
+                          authToken: widget.authToken,
+                          subredditName: 'r/${result[index].toString()}');
+                    }));
+                  },
+                );
+              })
+          : const Center(
+              child: Text('Result not found'),
+            ),
     );
   }
 

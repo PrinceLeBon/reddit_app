@@ -9,3 +9,4 @@ User global_user = User(
     banner_picture: '');
 
 List<Reddit_Post> listRedditPost = [];
+List<String> SubscribedSubredditOfUser = [];
