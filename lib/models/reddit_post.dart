@@ -7,6 +7,8 @@ class Reddit_Post {
   late int numComment;
   late int score;
   late bool isVideo;
+  late String thumbnail;
+  late Duration duration;
 
   Reddit_Post({
     required this.title,
@@ -17,5 +19,7 @@ class Reddit_Post {
     required this.numComment,
     required this.score,
     required this.isVideo,
+    required this.thumbnail,
+    required this.duration,
   });
 }

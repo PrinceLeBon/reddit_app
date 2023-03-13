@@ -199,22 +199,30 @@ class _SubredditProfileState extends State<SubredditProfile> {
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body);
       final List<dynamic> postsData = jsonData['data']['children'];
-      /*Map<dynamic, dynamic> v = postsData[6];
+      Map<dynamic, dynamic> v = postsData[6];
       Map<dynamic, dynamic> vv = v['data'];
       vv.forEach((key, value) {
         print('$key : $value');
       });
-      print(v);*/
+      print(v);
       for (var element in postsData) {
         Reddit_Post redditPost = Reddit_Post(
             title: element['data']['title'],
             selftext: element['data']['selftext'],
             author: element['data']['author'],
-            url: element['data']['url'],
+            url: (element['data']['is_video'])
+                ? element['data']['media']['reddit_video']['scrubber_media_url']
+                : element['data']['url'],
             subredditName: element['data']['subreddit_name_prefixed'],
             numComment: element['data']['num_comments'],
             score: element['data']['score'],
-            isVideo: element['data']['is_video']);
+            isVideo: element['data']['is_video'],
+            thumbnail: element['data']['thumbnail'],
+            duration: (element['data']['is_video'])
+                ? Duration(
+                seconds: element['data']['media']['reddit_video']
+                ['duration'])
+                : const Duration(seconds: 0));
         setState(() {
           //listRedditPost.add(redditPost);
         });

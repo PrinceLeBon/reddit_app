@@ -124,11 +124,19 @@ class _SubredditPageState extends State<SubredditPage> {
             title: element['data']['title'],
             selftext: element['data']['selftext'],
             author: element['data']['author'],
-            url: element['data']['url'],
+            url: (element['data']['is_video'])
+                ? element['data']['media']['reddit_video']['scrubber_media_url']
+                : element['data']['url'],
             subredditName: element['data']['subreddit_name_prefixed'],
             numComment: element['data']['num_comments'],
             score: element['data']['score'],
-            isVideo: element['data']['is_video']);
+            isVideo: element['data']['is_video'],
+            thumbnail: element['data']['thumbnail'],
+            duration: (element['data']['is_video'])
+                ? Duration(
+                    seconds: element['data']['media']['reddit_video']
+                        ['duration'])
+                : const Duration(seconds: 0));
         setState(() {
           listRedditPost.add(redditPost);
           listRedditPost.shuffle();

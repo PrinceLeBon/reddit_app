@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_app/models/reddit_post.dart';
 import 'package:reddit_app/pages/subreddit_profile.dart';
+import 'package:video_player/video_player.dart';
 
 class Post extends StatefulWidget {
   final Reddit_Post redditPost;
@@ -14,10 +15,23 @@ class Post extends StatefulWidget {
 }
 
 class _PostState extends State<Post> {
+  late VideoPlayerController _controller;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _controller = VideoPlayerController.network(widget.redditPost.url)
+      ..addListener(() => setState(() {}))
+      ..setLooping(true)
+      ..initialize().then((_) => _controller.play());
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _controller.dispose();
   }
 
   @override
@@ -73,6 +87,20 @@ class _PostState extends State<Post> {
             (widget.redditPost.url.contains('.jpg') ||
                     widget.redditPost.url.contains('.png'))
                 ? Image.network(widget.redditPost.url)
+                : Container(),
+            (widget.redditPost.isVideo)
+                ? (_controller.value.isInitialized)
+                    ? Column(
+                        children: [
+                          VideoPlayer(_controller),
+                          Container(
+                            height: 10,
+                          ),
+                          VideoProgressIndicator(_controller,
+                              allowScrubbing: true)
+                        ],
+                      )
+                    : const Center(child: CircularProgressIndicator())
                 : Container(),
             Container(
               height: 10,

@@ -30,6 +30,7 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   flutter_web_auth: ^0.5.0
+  video_player: ^2.6.0
   http: ^0.13.5
   flutter:
     sdk: flutter
