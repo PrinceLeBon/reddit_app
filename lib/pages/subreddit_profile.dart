@@ -72,11 +72,11 @@ class _SubredditProfileState extends State<SubredditProfile> {
                   Container(
                     height: 200,
                     width: MediaQuery.of(context).size.width,
-                    /*decoration: BoxDecoration(
+                    decoration: BoxDecoration(
                         image: DecorationImage(
                             image: NetworkImage(
                                 banner_img.replaceAll('&amp;', '&')),
-                            fit: BoxFit.cover)),*/
+                            fit: BoxFit.cover)),
                     child: Stack(
                       children: [
                         Positioned(
@@ -199,12 +199,12 @@ class _SubredditProfileState extends State<SubredditProfile> {
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body);
       final List<dynamic> postsData = jsonData['data']['children'];
-      Map<dynamic, dynamic> v = postsData[6];
-      Map<dynamic, dynamic> vv = v['data'];
+      /*Map<dynamic, dynamic> element = postsData[0];
+      Map<dynamic, dynamic> vv = element['data'];
       vv.forEach((key, value) {
         print('$key : $value');
       });
-      print(v);
+      print(v);*/
       for (var element in postsData) {
         Reddit_Post redditPost = Reddit_Post(
             title: element['data']['title'],
@@ -212,7 +212,9 @@ class _SubredditProfileState extends State<SubredditProfile> {
             author: element['data']['author'],
             url: (element['data']['is_video'])
                 ? element['data']['media']['reddit_video']['scrubber_media_url']
-                : element['data']['url'],
+                : (element['data']['media']['type'] == 'youtube.com')
+                    ? element['data']['url']
+                    : element['data']['url'],
             subredditName: element['data']['subreddit_name_prefixed'],
             numComment: element['data']['num_comments'],
             score: element['data']['score'],
@@ -220,11 +222,11 @@ class _SubredditProfileState extends State<SubredditProfile> {
             thumbnail: element['data']['thumbnail'],
             duration: (element['data']['is_video'])
                 ? Duration(
-                seconds: element['data']['media']['reddit_video']
-                ['duration'])
+                    seconds: element['data']['media']['reddit_video']
+                        ['duration'])
                 : const Duration(seconds: 0));
         setState(() {
-          //listRedditPost.add(redditPost);
+          listRedditPost.add(redditPost);
         });
       }
     } else {
