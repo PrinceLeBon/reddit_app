@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:reddit_app/pages/subreddit_page.dart';
 import 'package:reddit_app/widgets/profile_picture.dart';
@@ -45,10 +46,7 @@ class _SubredditProfileState extends State<SubredditProfile> {
             toolbarHeight: 40,
             leading: IconButton(
                 onPressed: () {
-                  Navigator.of(context)
-                      .pushReplacement(MaterialPageRoute(builder: (context) {
-                    return SubredditPage(authToken: widget.authToken);
-                  }));
+                  Navigator.of(context).pop();
                 },
                 icon: const Icon(
                   Icons.arrow_back,
@@ -199,6 +197,7 @@ class _SubredditProfileState extends State<SubredditProfile> {
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body);
       final List<dynamic> postsData = jsonData['data']['children'];
+
       /*Map<dynamic, dynamic> element = postsData[0];
       Map<dynamic, dynamic> vv = element['data'];
       vv.forEach((key, value) {
@@ -206,15 +205,17 @@ class _SubredditProfileState extends State<SubredditProfile> {
       });
       print(v);*/
       for (var element in postsData) {
+        if (kDebugMode) {
+          print('000000000000000000000000');
+          print(element['data']['url']);
+        }
         Reddit_Post redditPost = Reddit_Post(
             title: element['data']['title'],
             selftext: element['data']['selftext'],
             author: element['data']['author'],
             url: (element['data']['is_video'])
                 ? element['data']['media']['reddit_video']['scrubber_media_url']
-                : (element['data']['media']['type'] == 'youtube.com')
-                    ? element['data']['url']
-                    : element['data']['url'],
+                : element['data']['url'],
             subredditName: element['data']['subreddit_name_prefixed'],
             numComment: element['data']['num_comments'],
             score: element['data']['score'],

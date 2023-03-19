@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_web_auth/flutter_web_auth.dart';
+import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import 'package:http/http.dart' as http;
 import 'package:reddit_app/components/globals.dart';
 import 'package:reddit_app/models/user.dart';
 import 'dart:convert';
-
 import 'package:reddit_app/pages/subreddit_page.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -15,7 +14,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  static const String _clientId = 'cRySjh0bQCJK5E0B0ViNQw';
+  static const String _clientId = 'c6sv0jiJ2zDFuH2yWpLk1Q';
   static const String _redirectUri = 'redditapp://oauth2callback';
   static const String _authEndpoint =
       'https://www.reddit.com/api/v1/authorize.compact?';
@@ -51,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
         '&scope=identity,edit,flair,history,livemanage,modconfig,modflair,'
         'modlog,modposts,modwiki,mysubreddits,privatemessages,read,report,save,'
         'structuredstyles,submit,subscribe,vote,wikiedit,wikiread';
-    final result = await FlutterWebAuth.authenticate(
+    final result = await FlutterWebAuth2.authenticate(
         url: authorizationUrl, callbackUrlScheme: "redditapp");
     final uri = Uri.parse(result);
     final queryParams = uri.queryParameters;

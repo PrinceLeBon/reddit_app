@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_web_auth/flutter_web_auth.dart';
+import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import 'package:reddit_app/models/reddit_post.dart';
 import 'package:reddit_app/pages/subreddit_profile.dart';
 import 'package:video_player/video_player.dart';
@@ -154,7 +154,7 @@ class _PostState extends State<Post> {
                                 child: Center(
                                   child: IconButton(
                                       onPressed: () async {
-                                        await FlutterWebAuth.authenticate(
+                                        await FlutterWebAuth2.authenticate(
                                             url: widget.redditPost.url,
                                             callbackUrlScheme: "redditapp");
                                       },
@@ -164,9 +164,9 @@ class _PostState extends State<Post> {
                                       )),
                                 )))),
                     onTap: () async {
-                      await FlutterWebAuth.authenticate(
+                      /*await FlutterWebAuth.authenticate(
                           url: widget.redditPost.url,
-                          callbackUrlScheme: "redditapp");
+                          callbackUrlScheme: "redditapp");*/
                     },
                   )
                 : Container(),
