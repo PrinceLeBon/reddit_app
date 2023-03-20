@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:reddit_app/pages/subreddit_page.dart';
 import 'package:reddit_app/widgets/profile_picture.dart';
 import 'package:http/http.dart' as http;
 import '../components/globals.dart';

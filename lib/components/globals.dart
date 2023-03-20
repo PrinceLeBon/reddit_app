@@ -1,5 +1,4 @@
 import 'package:reddit_app/models/user.dart';
-
 import '../models/reddit_post.dart';
 
 User global_user = User(

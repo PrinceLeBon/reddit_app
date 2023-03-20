@@ -1,6 +1,8 @@
 # reddit_app
 
 A Flutter project to work with Reddit api and Oauth2.0 authentication
+- [API documentation](https://www.reddit.com/dev/api)
+- [OAuth2 with Reddit documentation](https://github.com/reddit-archive/reddit/wiki/OAuth2)
 
 ## Installation
 
@@ -28,7 +30,7 @@ A Flutter project to work with Reddit api and Oauth2.0 authentication
 
 ## Known issues
 
-None for the moment
+Log Out doesn't work yet
 
 ## Contribution
 

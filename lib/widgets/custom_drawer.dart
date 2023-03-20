@@ -1,9 +1,14 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:reddit_app/pages/homepage.dart';
 import 'package:reddit_app/pages/profile.dart';
 import '../components/globals.dart';
+import 'package:http/http.dart' as http;
 
 class CustomDrawer extends StatefulWidget {
-  const CustomDrawer({Key? key}) : super(key: key);
+  final String authToken;
+
+  const CustomDrawer({Key? key, required this.authToken}) : super(key: key);
 
   @override
   State<CustomDrawer> createState() => _CustomDrawerState();
@@ -12,7 +17,6 @@ class CustomDrawer extends StatefulWidget {
 class _CustomDrawerState extends State<CustomDrawer> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
@@ -72,12 +76,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 height: 30,
               ),
               InkWell(
+                onTap: LogOut,
                 child: _childDrawer1(Icons.logout, 'Log Out', 18),
-                onTap: () {
-                  /*FirebaseAuth.instance.signOut();
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => const Login()));*/
-                },
               )
             ],
           ),
@@ -102,5 +102,30 @@ class _CustomDrawerState extends State<CustomDrawer> {
         ),
       ],
     );
+  }
+
+  Future<void> LogOut() async {
+    final response = await http.post(
+        Uri.https('www.reddit.com', '/api/v1/revoke_token'),
+        headers: <String, String>{
+          'Authorization': 'Basic : ${widget.authToken}'
+        },
+        body: {
+          'token': widget.authToken,
+          'token_type_hint': 'access_token'
+        });
+
+    if (response.statusCode == 200) {
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+        return const MyHomePage();
+      }));
+    } else {
+      if (kDebugMode) {
+        print(response.statusCode.toString());
+        print(response.reasonPhrase);
+        print(widget.authToken);
+      }
+      throw Exception('Failed to log out');
+    }
   }
 }

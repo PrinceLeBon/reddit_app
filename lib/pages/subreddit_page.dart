@@ -33,7 +33,7 @@ class _SubredditPageState extends State<SubredditPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white70,
-        drawer: const CustomDrawer(),
+        drawer: CustomDrawer(authToken: widget.authToken),
         key: _scaffoldKey,
         appBar: AppBar(
           title: Form(
@@ -156,33 +156,6 @@ class _SubredditPageState extends State<SubredditPage> {
           listRedditPost.shuffle();
         });
       }
-      /*Map <dynamic, dynamic> ll = l[9]['data'];
-      print('${ll.length} \n\n');
-      List <dynamic> lll = ll.keys.toList();
-      print(' ${lll.length} \n\n');
-      for (int i=0; i<ll.length; i++){
-        print('$i: ${lll[i]}: ${ll[lll[i]]} \n');
-      }*/
-
-      /*for (int i = 0; i < l.length; i++) {
-        print(l[i]['data']['is_video']);
-        print('${'author: ' + l[i]['data']['author']}\n');
-        print(
-            '${'subreddit_name_prefixed: ' +
-                l[i]['data']['subreddit_name_prefixed']}\n');
-        print('${'url: ' + l[i]['data']['url']}\n');
-        print('\n\n\n\n\n\n');
-      }*/
-      /*final posts = postsData.map((post) {
-        final postData = post['data'];
-        return RedditPost(
-          title: postData['title'],
-          author: postData['author'],
-          subreddit: postData['subreddit_name_prefixed'],
-          thumbnailUrl: postData['thumbnail'],
-        );
-      }).toList();
-      return posts;*/
     } else {
       throw Exception('Failed to load subreddit posts');
     }
