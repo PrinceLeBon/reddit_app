@@ -1,6 +1,6 @@
 # reddit_app
 
-A Flutter project to work with Reddit api and Oauth2.0 autentification
+A Flutter project to work with Reddit api and Oauth2.0 authentication
 
 ## Installation
 
