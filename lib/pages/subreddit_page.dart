@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:reddit_app/models/reddit_post.dart';
 import 'package:reddit_app/pages/subreddit_search.dart';
+import 'package:reddit_app/widgets/custom_drawer.dart';
 import 'package:reddit_app/widgets/post.dart';
+import 'package:reddit_app/widgets/profile_picture.dart';
 import '../components/globals.dart';
 
 class SubredditPage extends StatefulWidget {
@@ -18,6 +20,7 @@ class SubredditPage extends StatefulWidget {
 class _SubredditPageState extends State<SubredditPage> {
   final myController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -30,6 +33,8 @@ class _SubredditPageState extends State<SubredditPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white70,
+        drawer: const CustomDrawer(),
+        key: _scaffoldKey,
         appBar: AppBar(
           title: Form(
               key: _formKey,
@@ -66,6 +71,15 @@ class _SubredditPageState extends State<SubredditPage> {
             IconButton(
                 onPressed: _loadSubredditPosts, icon: const Icon(Icons.cached))
           ],
+          leading: InkWell(
+              child: Padding(
+                padding: const EdgeInsets.all(5),
+                child: Profile_Picture(
+                    taille: 20, image: global_user.profile_picture),
+              ),
+              onTap: () {
+                _scaffoldKey.currentState?.openDrawer();
+              }),
         ),
         body: (listRedditPost.isEmpty)
             ? const Center(child: CircularProgressIndicator())

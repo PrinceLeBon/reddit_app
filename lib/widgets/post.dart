@@ -20,7 +20,6 @@ class _PostState extends State<Post> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _controller = VideoPlayerController.network(widget.redditPost.url)
       ..addListener(() => setState(() {}))
@@ -30,7 +29,6 @@ class _PostState extends State<Post> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _controller.dispose();
   }
@@ -49,7 +47,6 @@ class _PostState extends State<Post> {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    //const Profile_Picture(taille: 20, image: 'image'),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

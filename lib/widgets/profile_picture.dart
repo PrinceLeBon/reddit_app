@@ -15,8 +15,9 @@ class Profile_Picture extends StatelessWidget {
       decoration: BoxDecoration(
           color: Colors.white,
           shape: BoxShape.circle,
-          image:
-          DecorationImage(image: NetworkImage(image), fit: BoxFit.cover)),
+          image: DecorationImage(
+              image: NetworkImage(image.replaceAll('&amp;', '&')),
+              fit: BoxFit.contain)),
     );
   }
 }
