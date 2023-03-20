@@ -42,8 +42,8 @@ contribute, please follow these steps:
 
 - Step 3: Set up your development environment After forking the repository, you need to configure
   your development environment to be able to work on the project. Please see
-  the [README.md](https://github.com/PrinceLeBon/todo_app/blob/main/README.md) file for instructions
-  on how to install dependencies and set up your environment.
+  the [README.md](https://github.com/PrinceLeBon/reddit_app/blob/main/README.md) file for
+  instructions on how to install dependencies and set up your environment.
 
 - Step 4: Write code Now that you have set up your development environment, you can start writing
   code to solve the problem or add new features.
