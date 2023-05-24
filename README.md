@@ -27,13 +27,18 @@ A Flutter project to work with Reddit api and Oauth2.0 authentication
 - Display a subreddit basic information. The bare minimum is to display the name, title, number of
   subscribers, description, and header image
 - Display posts from a subreddit
-  > https://github.com/PrinceLeBon/reddit_app/assets/102158487/77bacf97-749b-4e4c-ab73-1503c91dbf24
+  > https://github.com/PrinceLeBon/reddit_app/assets/102158487/ce5a270c-dacf-466c-ad5b-b0fdfd72d69b
 - Subscribe/Unsubscribe to a subreddit
   > https://github.com/PrinceLeBon/reddit_app/assets/102158487/ea0a1742-8125-4ee4-8684-71d2f273a6c9
 
 ## Known issues
 
 Log Out doesn't work yet
+
+## Possibility of improvement (this list is not limited):
+- Improving the ui with animation, transition, etc
+- Add Bloc like state management
+- Implement log out
 
 ## Contribution
 
