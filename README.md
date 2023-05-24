@@ -19,6 +19,7 @@ A Flutter project to work with Reddit api and Oauth2.0 authentication
 - Authentication to the Reddit API with the OAuth2 protocol (Reddit implements two Authorization
   grant, the Implicit grant flow and the Authorization Code flow. We use the Authorization Code flow
   for this project.)
+  > https://github.com/PrinceLeBon/reddit_app/assets/102158487/92dda67f-f3e7-433e-80f2-04eba9ec3526
 - Display the user’s profile. The bare minimum is to display the profile picture, username, and
   description.
 - Display posts from the subreddits the user is subbed to
@@ -26,7 +27,9 @@ A Flutter project to work with Reddit api and Oauth2.0 authentication
 - Display a subreddit basic information. The bare minimum is to display the name, title, number of
   subscribers, description, and header image
 - Display posts from a subreddit
+  > https://github.com/PrinceLeBon/reddit_app/assets/102158487/77bacf97-749b-4e4c-ab73-1503c91dbf24
 - Subscribe/Unsubscribe to a subreddit
+  > https://github.com/PrinceLeBon/reddit_app/assets/102158487/ea0a1742-8125-4ee4-8684-71d2f273a6c9
 
 ## Known issues
 
